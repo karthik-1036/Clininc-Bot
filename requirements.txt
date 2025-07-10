@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+twilio
+gspread
+oauth2client
+python-dotenv
+httpx
