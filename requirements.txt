@@ -7,3 +7,12 @@ python-dotenv
 httpx
 python-multipart
 
+fastapi
+uvicorn
+python-dotenv
+twilio
+google-api-python-client
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
+python-multipart
