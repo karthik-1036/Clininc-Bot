@@ -10,8 +10,11 @@ telegram_router = APIRouter()
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # Better to load from .env
 TELEGRAM_API = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
-@telegram_router.post("/telegram/7916999347:AAEZdSsrl3d77bZKvBiKWrVNblZbhNzpyak")
-async def telegram_webhook(request: Request):
+@telegram_router.post("/telegram/{token}")
+async def telegram_webhook(token: str, request: Request):
+    if token != TELEGRAM_TOKEN:
+        return {"status": "unauthorized"}  # prevent abuse
+
     data = await request.json()
     print("📥 Incoming Telegram Update:", data)
 
@@ -29,6 +32,7 @@ async def telegram_webhook(request: Request):
             )
 
     return {"status": "ok"}
+
 
 async def send_telegram_message(chat_id, text):
     async with httpx.AsyncClient() as client:
