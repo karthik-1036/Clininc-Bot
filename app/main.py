@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 app = FastAPI()
+app.include_router(telegram_router)
 
 
 @app.post("/whatsapp")
@@ -34,5 +35,3 @@ async def telegram_webhook(token: str, request: Request):
         }
     return {"ok": True}
 
-
-app.include_router(telegram_router)

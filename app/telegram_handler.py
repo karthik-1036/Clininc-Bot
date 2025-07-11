@@ -7,11 +7,14 @@ telegram_router = APIRouter()
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # Better to load from .env
 TELEGRAM_API = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
-@telegram_router.post(f"/telegram/{TELEGRAM_TOKEN}")
-async def telegram_webhook(request: Request):
+@telegram_router.post("/telegram/{token}")
+async def telegram_webhook(token: str, request: Request):
+    if token != TELEGRAM_TOKEN:
+        return {"status": "unauthorized"}
+    
     data = await request.json()
-    print("✅ Telegram update received:")
-    print(data)
+    print("📥 Incoming Telegram Update:", data)
+    return {"status": "ok"}
 
     message = data.get("message")
     if not message:
@@ -41,6 +44,6 @@ async def send_telegram_message(chat_id, text):
             )
             print("➡️ Sending message to Telegram...")
             print("📬 Status Code:", response.status_code)
-            print("📬 Telegram API Response:", response.text)
+            print("📬 Telegram API Response:", response.json())
         except Exception as e:
             print("❌ Failed to send Telegram message:", str(e))
