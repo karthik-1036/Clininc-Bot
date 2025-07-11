@@ -3,7 +3,7 @@
 from fastapi.responses import PlainTextResponse
 from twilio.twiml.messaging_response import MessagingResponse
 from app.sheets import save_appointment, save_feedback
-from app.gemini_ai import analyze_feedback
+# from app.gemini_ai import analyze_feedback
 from dotenv import load_dotenv
 
 load_dotenv()
