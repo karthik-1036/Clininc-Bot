@@ -6,6 +6,7 @@ oauth2client
 python-dotenv
 httpx
 python-multipart
+python-telegram-bot==20.6
 
 fastapi
 uvicorn
