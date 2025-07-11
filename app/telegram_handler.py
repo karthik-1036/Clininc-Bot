@@ -7,33 +7,25 @@ telegram_router = APIRouter()
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # Better to load from .env
 TELEGRAM_API = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
-@telegram_router.post("/telegram/{token}")
-async def telegram_webhook(token: str, request: Request):
-    if token != TELEGRAM_TOKEN:
-        return {"status": "unauthorized"}
-    
+@telegram_router.post("/telegram/7916999347:AAEZdSsrl3d77bZKvBiKWrVNblZbhNzpyak")
+async def telegram_webhook(request: Request):
     data = await request.json()
     print("📥 Incoming Telegram Update:", data)
-    return {"status": "ok"}
 
     message = data.get("message")
-    if not message:
-        print("⚠️ No message field in update.")
-        return {"ok": True}
+    if message:
+        chat_id = message["chat"]["id"]
+        text = message.get("text", "")
 
-    chat_id = message["chat"]["id"]
-    text = message.get("text", "")
+        reply_text = f"👋 You said: {text}"
 
-    print(f"👤 Chat ID: {chat_id}")
-    print(f"📩 Incoming Text: {text}")
+        async with httpx.AsyncClient() as client:
+            await client.post(
+                f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+                json={"chat_id": chat_id, "text": reply_text},
+            )
 
-    if text == "/start":
-        reply_text = "👋 Welcome to the Clinic Bot! How can I help you today?"
-    else:
-        reply_text = f"You said: {text}"
-
-    await send_telegram_message(chat_id, reply_text)
-    return {"ok": True}
+    return {"status": "ok"}
 
 async def send_telegram_message(chat_id, text):
     async with httpx.AsyncClient() as client:
