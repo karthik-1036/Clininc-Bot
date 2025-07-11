@@ -1,13 +1,21 @@
 from fastapi import APIRouter, Request
 import httpx
+import os
+from dotenv import load_dotenv
 
-router = APIRouter()
+load_dotenv()
 
-TELEGRAM_TOKEN = "7916999347:AAEZdSsrl3d77bZKvBiKWrVNblZbhNzpyak"
+telegram_router = APIRouter()
+
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_API = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
-@router.post(f"/telegram/{TELEGRAM_TOKEN}")
-async def telegram_webhook(request: Request):
+
+@telegram_router.post("/telegram/{token}")
+async def telegram_webhook(token: str, request: Request):
+    if token != TELEGRAM_TOKEN:
+        return {"ok": False, "description": "Invalid token"}
+
     data = await request.json()
     print("Telegram update received:", data)
 
@@ -25,6 +33,7 @@ async def telegram_webhook(request: Request):
 
     await send_telegram_message(chat_id, reply_text)
     return {"ok": True}
+
 
 async def send_telegram_message(chat_id, text):
     async with httpx.AsyncClient() as client:
