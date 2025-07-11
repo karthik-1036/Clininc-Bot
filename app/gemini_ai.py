@@ -1,31 +1,33 @@
-# gemini_ai.py
+# telegram_handler.py
+
 import httpx
 import os
-from dotenv import load_dotenv
-load_dotenv()
 
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
-async def analyze_feedback(text):
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
-    headers = {"Content-Type": "application/json"}
-    params = {"key": os.getenv("GEMINI_API_KEY")}
+async def handle_telegram_message(data):
+    message = data.get("message", {})
+    chat_id = message.get("chat", {}).get("id")
+    text = message.get("text", "").strip().lower()
 
-    prompt = f"""Analyze the sentiment and summarize this patient feedback:
-    "{text}"
-    Respond in this format:
-    {{
-      "summary": "...",
-      "sentiment": "positive" | "neutral" | "negative"
-    }}"""
+    print("Incoming Telegram Message:", message)
 
-    body = {
-        "contents": [
-            {"parts": [{"text": prompt}]}
-        ]
-    }
+    if not chat_id or not text:
+        return {"ok": True}  # Nothing to reply
 
+    # Example FAQ reply
+    if "clinic hours" in text:
+        reply = "🕒 We’re open:\nMon–Sat\n9 AM – 7 PM"
+    elif text.startswith("feedback:"):
+        reply = "🙏 Thank you for your feedback!"
+    else:
+        reply = "👋 Welcome to our clinic! Type 'clinic hours' or 'feedback: your message'"
+
+    # Send reply back to Telegram
     async with httpx.AsyncClient() as client:
-        res = await client.post(url, json=body, params=params, headers=headers)
-        raw = res.json()
-        output = raw['candidates'][0]['content']['parts'][0]['text']
-        return eval(output)  # You can use json.loads(output) if formatted correctly
+        await client.post(
+            f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+            json={"chat_id": chat_id, "text": reply}
+        )
+
+    return {"ok": True}
