@@ -2,8 +2,8 @@
 
 from fastapi import FastAPI, Request
 from app.whatsapp_handler import handle_message as handle_whatsapp
-from app.telegram_handler import handle_telegram_message
-import uvicorn
+from app.telegram_handler import handle_telegram_message, telegram_router
+# import uvicorn
 import os
 from dotenv import load_dotenv
 
@@ -21,6 +21,8 @@ async def telegram_webhook(token: str, request: Request):
         return {"ok": False, "description": "Invalid token"}
     data = await request.json()
     return await handle_telegram_message(data)
+app.include_router(telegram_router)
 
-if __name__ == "__main__":
-    uvicorn.run("app.main:app", host="0.0.0.0", port=5000)
+
+#  if __name__ == "__main__":
+    # uvicorn.run("app.main:app", host="0.0.0.0", port=5000)
