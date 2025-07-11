@@ -2,12 +2,12 @@ from fastapi import APIRouter, Request
 import httpx
 import os
 
-router = APIRouter()
+telegram_router = APIRouter()
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # Better to load from .env
 TELEGRAM_API = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
-@router.post(f"/telegram/{TELEGRAM_TOKEN}")
+@telegram_router.post(f"/telegram/{TELEGRAM_TOKEN}")
 async def telegram_webhook(request: Request):
     data = await request.json()
     print("✅ Telegram update received:")
