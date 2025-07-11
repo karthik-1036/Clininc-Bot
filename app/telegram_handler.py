@@ -41,4 +41,6 @@ async def send_telegram_message(chat_id, text):
             f"{TELEGRAM_API}/sendMessage",
             json={"chat_id": chat_id, "text": text}
         )
+        print("Telegram API status:", response.status_code)
         print("Telegram API response:", response.text)
+
