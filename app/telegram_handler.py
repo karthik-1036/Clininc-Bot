@@ -7,7 +7,7 @@ load_dotenv()
 
 telegram_router = APIRouter()
 
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # Better to load from .env
+TELEGRAM_TOKEN = "7916999347:AAEZdSsrl3d77bZKvBiKWrVNblZbhNzpyak" # Better to load from .env
 TELEGRAM_API = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
 @telegram_router.post("/telegram/{token}")
