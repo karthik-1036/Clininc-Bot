@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Request
 import httpx
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
 
 telegram_router = APIRouter()
 
